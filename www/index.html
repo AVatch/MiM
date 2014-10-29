@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <script src="lib/angular-local-storage/dist/angular-local-storage.min.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="lib/timer/timer.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+  </head>
+  <body 
+    ng-app="mim"
+    ng-controller="mimController">
+
+    <ion-pane>
+      
+      <!-- HEADER BAR -->
+      <ion-header-bar class="bar-stable c0 t0">
+        <div 
+          ng-init="filterToggle=false"
+          class="buttons">
+          <button 
+            ng-click="filterToggle=!filterToggle"
+            class="button button-icon icon ion-ios7-pricetag-outline t0"></button>
+        </div>
+        <h1 class="title t0">MiM</h1>
+        <div class="buttons">
+          <button 
+            ng-click="openModal()"
+            class="button button-icon icon ion-ios7-plus-empty t0"></button>
+        </div>
+      </ion-header-bar>
+      <!-- HEADER BAR -->
+
+
+
+
+      <ion-content>
+
+        <!-- FILTER BAR -->
+        <div 
+          class="row"
+          ng-show="filterToggle">
+          <div class="col">
+            <div 
+              class="circle color01"
+              ng-click="filterByColor('#F16753')"
+              ng-class="{selected: filterColor=='#F16753'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color02"
+              ng-click="filterByColor('#42B841')"
+              ng-class="{selected: filterColor=='#42B841'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color03"
+              ng-click="filterByColor('#2C97DE')"
+              ng-class="{selected: filterColor=='#2C97DE'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color04"
+              ng-click="filterByColor('#FFDE37')"
+              ng-class="{selected: filterColor=='#FFDE37'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color05"
+              ng-click="filterByColor('#AE4BF6')"
+              ng-class="{selected: filterColor=='#AE4BF6'}"></div>
+          </div>
+        </div>
+
+        <div
+          class="row"
+          ng-show="filterToggle"
+          style="
+            padding:0px;">
+          
+          <div class="button-bar">
+            <a 
+              class="button button-light"
+              ng-click="sortByField('created')"
+              style="color:#666666;">
+              <i 
+                ng-show="sortParam=='-timeMillis'"
+                class="ion-ios7-arrow-thin-up"
+                style="margin-right:5px;"></i>
+              <i 
+                ng-show="sortParam=='timeMillis'"
+                class="ion-ios7-arrow-thin-down"
+                style="margin-right:5px;"></i>
+                Created</a>
+            <a 
+              class="button button-light"
+              ng-click="sortByField('since')"
+              style="color:#666666;">
+              <i 
+                ng-show="sortParam=='-since'"
+                class="ion-ios7-arrow-thin-up"
+                style="margin-right:5px;"></i>
+              <i 
+                ng-show="sortParam=='since'"
+                class="ion-ios7-arrow-thin-down"
+                style="margin-right:5px;"></i>
+                Since</a>
+            <a 
+              class="button button-light"
+              ng-click="sortByField('reset')"
+              style="color:#666666;">
+                <i 
+                ng-show="sortParam=='-reset'"
+                class="ion-ios7-arrow-thin-up"
+                style="margin-right:5px;"></i>
+              <i 
+                ng-show="sortParam=='reset'"
+                class="ion-ios7-arrow-thin-down"
+                style="margin-right:5px;"></i>
+                Reset</a>
+          </div>
+
+        </div>
+
+        <!-- FILTER BAR -->
+
+        <!-- SEARCH BAR -->
+        <div class="search-bar">
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input
+              ng-model="search"
+              type="text"
+              placeholder="Search">
+          </label>
+        </div>
+        <!-- SEARCH BAR -->
+
+        
+        <ion-list>
+          <ion-item
+            ng-repeat="moment in moments 
+              | filter:search
+              | filter:filterColor
+              | orderBy:sortParam"
+            item="moment"
+            class="card moment-list"
+            style="border-left: 5px solid {{moment.color}};">
+
+            <div class="item-text-wrap moment">
+              <div class="row">
+                <div class="col col-90">
+                  <div class="row">
+                    <div ng-if="moment.media" class="col col-center col-20">
+                      <!-- <img src="http://placehold.it/50x50"> -->
+                      <img 
+                        src="data:image/jpeg;base64,{{moment.media}}"
+                        style="
+                          width:50px;
+                          height:50px;
+
+                          border-radius:5px;">
+                    </div>
+                    <div class="col col-center" style="padding-left:5px;">
+                      <h4 style="color:{{moment.color}};">
+                        <timer start-time="moment.time">
+                          <span
+                            ng-show="months==0 && days !=0"
+                          >{{days}} day{{daysS}} </span>
+                          <span
+                            ng-show="months==0 && days==0 && hours!=0"
+                            >{{hours}} hour{{hoursS}} </span>
+                          <span
+                            ng-show="months==0 && days==0 && hours==0 && minutes!=0"
+                            >{{minutes}} minute{{minutesS}} </span>
+                          <span
+                            ng-show="months==0 && days==0 && hours==0 && minutes==0"
+                            >{{seconds}} second{{secondsS}} </span>
+                        </timer>
+                        since
+                      </h4>
+                      <p>{{moment.moment}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col col-center moment-reset-counter">
+                  <span style="color:{{moment.color}}">{{moment.reset}}</span>
+                  </div>
+              </div>
+            </div>
+
+            <ion-option-button class="button-energized"
+                             ng-click="reload(moment)"
+                             style="border:0px;">
+              <i  class="icon ion-ios7-reload"
+                  style=" position: relative;
+                          top: 20%;
+                          transform: translateY(-20%);"></i>
+            </ion-option-button>
+            
+            <ion-option-button class="button-assertive"
+                               ng-click="delete(moment)"
+                               style="border:0px;">
+              <i  class="icon ion-ios7-trash-outline"
+                  style=" position: relative;
+                          top: 20%;
+                          transform: translateY(-20%);"></i>
+            </ion-option-button>
+
+          </ion-item>
+        </ion-list>
+
+
+      </ion-content>
+
+
+
+
+    </ion-pane>
+  </body>
+</html>

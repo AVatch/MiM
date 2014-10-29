@@ -1,0 +1,205 @@
+ <ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">New Moment</h1>
+        <div class="buttons">
+          <button 
+            ng-click="closeModal()"
+            class="button button-clear t1">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+
+
+    <div class="row">
+        <div class="col">
+                
+            <div class="card new-moment moment-list"
+                style="border-left: 5px solid {{newMoment.color}};">
+
+                <div class="item-content">
+                    <div class="item-text-wrap moment">
+                      <div class="row">
+                        <div class="col col-90">
+                          <div class="row">
+                            <div class="col col-center col-20">
+                              
+                              
+                              <i
+                                ng-show="!newMoment.media"
+                                ng-click="addMedia()"
+                                class="icon ion-camera"
+                                style="font-size:50px;"></i>
+
+
+                                <img
+                                  ng-show="newMoment.media"
+                                  ng-click="addMedia()"
+                                  src="data:image/jpeg;base64,{{newMoment.media}}"
+                                  style="
+                                    width:50px;
+                                    height:50px;
+
+                                    border-radius:5px;">
+
+                            </div>
+                            <div class="col col-center" style="padding-left:5px;">
+                              <h4 style="color:{{newMoment.color}};">0 seconds since</h4>
+                              <p>{{newMoment.moment}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col col-center moment-reset-counter">
+                            <span
+                            style="color: {{newMoment.color}};">0</span>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+
+    <div class="list list-inset new-moment-entry">
+        <h5 ng-class="{errorFocus: errorFound}" style="color:#666666;">Moment:</h5>
+
+        <label class="item item-input new-moment-field">
+            <input 
+                ng-model="newMoment.moment"
+                type="text" placeholder="Moment Description"
+                style="color:#666666;">
+        </label>
+    </div>
+
+    <div class="list list-inset new-moment-entry">
+        <h5 style="color:#666666;">Time</h5>
+        <label class="item item-input new-moment-field">
+            <input 
+                type="datetime-local" 
+                ng-model="newMoment.time"
+                style="padding-right:0px; color:#666666;"
+                >
+        </label>
+    </div>
+
+    <div class="list list-inset new-moment-entry">
+        <div class="row">
+            
+                <h5 style="margin-top:10px; margin-bottom:25px; color:#666666;">Ambient Reminders:</h5>
+            
+            
+                <label class="toggle toggle-positive" style="position: absolute; right:5px;">
+                   <input type="checkbox" checked ng-model="newMoment.ambientReminderFlag"
+                        style="
+                            font-size: 15px;
+                            color:#666666;">
+                   <div class="track">
+                     <div class="handle"></div>
+                   </div>
+                </label>
+            
+        </div>
+
+
+        <div class="row">
+            <h5 style="margin:0px; margin-bottom:8px; padding:0px; color:#666666;">Remind Me In:</h5>    
+        </div>
+        
+
+        <div class="row" style="padding-top:0px;padding-bottom:0px;">
+
+            <div class="col" style="padding-top:0px;padding-bottom:0px;">
+                <label class="item item-input new-moment-field">
+                    <input
+                        type="text" 
+                        pattern="[0-9]*"
+                        ng-model="newMoment.reminder.timeValue"
+                        style="
+                            font-size: 15px;
+                            height: 20px;
+                            color:#666666;"
+                        placeholder="Time">
+                </label>
+            </div>
+            <div class="col" style="padding-top:0px;padding-bottom:0px;">
+                <label class="item item-input new-moment-field">
+                    <select
+                        type="text"
+                        ng-model="newMoment.reminder.timeType"
+                        style="
+                            background: transparent;
+                            border: 0;
+                            border-radius: 0;
+                            height: 20px;
+                            font-size: 15px;
+                            padding-left: 0px;
+                            -webkit-appearance: none;
+                            color:#666666;"
+                        placeholder="Type">
+                        <option value="minute">Minutes</option>
+                        <option value="hour">Hours</option>
+                        <option value="day">Days</option>
+                        <option value="month">Months</option>
+                    </select>
+                </label>
+            </div>
+
+        </div>
+
+
+        <div class="row" style="margin-top:20px;"><h5 style="margin:0px; padding:0px; color:#666666;">Label:</h5></div>
+
+    </div>
+
+
+
+    </div>
+
+
+
+        <div 
+          class="row">
+
+          <div class="col">
+            <div 
+              class="circle color01"
+              ng-click="chooseNewMomentColor('#F16753')"
+              ng-class="{selected: newMoment.color=='#F16753'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color02"
+              ng-click="chooseNewMomentColor('#42B841')"
+              ng-class="{selected: newMoment.color=='#42B841'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color03"
+              ng-click="chooseNewMomentColor('#2C97DE')"
+              ng-class="{selected: newMoment.color=='#2C97DE'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color04"
+              ng-click="chooseNewMomentColor('#FFDE37')"
+              ng-class="{selected: newMoment.color=='#FFDE37'}"></div>
+          </div>
+          <div class="col">
+            <div 
+              class="circle color05"
+              ng-click="chooseNewMomentColor('#AE4BF6')"
+              ng-class="{selected: newMoment.color=='#AE4BF6'}"></div>
+          </div>
+        </div>
+
+    </ion-content>
+
+    <div class="bar bar-footer">
+      
+      <button
+        ng-click="addNewMoment(newMoment)"
+        class="button button-block t0 color03"
+        style="background-color: {{newMoment.color}};">Create Moment</button>
+    </div>
+  </ion-modal-view>
