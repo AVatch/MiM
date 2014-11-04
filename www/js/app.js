@@ -44,15 +44,16 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     moment.reset = 0;
     var d = new Date();
     moment.timeCreated = d.getTime();
+    moment.timeReset = d.getTime();
 
     moments.push(moment);
 
     // Assign notification
-    $cordovaLocalNotification.add({
-      message: moment.moment,
-    }).then(function () {
-      console.log('callback for adding background notification');
-    });
+    // $cordovaLocalNotification.add({
+    //   message: moment.moment,
+    // }).then(function () {
+    //   console.log('callback for adding background notification');
+    // });
 
 
     return localStorageService.set("moments", moments);
@@ -76,6 +77,7 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       if(moment.momentID == moments[i].momentID){
         moments[i].time = d.toISOString().substr(0,d.toISOString().length-1);
         moments[i].reset += 1;
+        moments[i].timeReset = d.getTime();
       }
     }
 
@@ -161,11 +163,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       }else{
         $scope.sortParam = 'timeMillis';
       }
-    }else if(param=='since'){
+    }else if(param=='timeReset'){
       if($scope.sortParam == param){
-        $scope.sortParam = '-since';
+        $scope.sortParam = '-timeReset';
       }else{
-        $scope.sortParam = 'since';
+        $scope.sortParam = 'timeReset';
       }
     }else if(param=='reset'){
       if($scope.sortParam == param){
@@ -228,7 +230,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     var ms = d.getTime();
     var ms_offset = d.getTimezoneOffset() * 60000;
-    var ms_corrected = ms - ms_offset;
+    // var ms_corrected = ms - ms_offset;
+    var ms_corrected = ms; // iPhone takes care of time zone edits
 
     var d_adjusted = new Date(ms_corrected);
 
