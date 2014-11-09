@@ -155,6 +155,13 @@
         <!-- SEARCH BAR -->
 
         
+        <div class="nothing" ng-show="moments.length==0" ng-click="openModal()">
+            <h1 class="center"
+              style="
+                padding-top:100px;
+                color: #aeaeae;">Add a Moment</h1>
+        </div>
+
         <ion-list>
           <ion-item
             ng-repeat="moment in moments 
@@ -212,7 +219,7 @@
                              style="border:0px;">
               <i  class="icon ion-ios7-reload"
                   style=" position: relative;
-                          top: 20%;
+                          top: 15%;
                           transform: translateY(-20%);"></i>
             </ion-option-button>
             

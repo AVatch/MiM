@@ -49,8 +49,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     moments.push(moment);
 
     // Assign notification
+    var d_fire = new Date(d.getTime() + 10000);
     // $cordovaLocalNotification.add({
-    //   message: moment.moment,
+    //   id: 'some_notification_id',
+    //   date: d_fire,
+    //   message: 'Hi There'
     // }).then(function () {
     //   console.log('callback for adding background notification');
     // });
