@@ -18,8 +18,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 })
 
 
-.factory('Moments', ['localStorageService', '$cordovaLocalNotification', 
-         function(localStorageService, $cordovaLocalNotification){
+.factory('Moments', ['$ionicPlatform', '$window', 'localStorageService', '$cordovaLocalNotification', 
+         function($ionicPlatform, $window, localStorageService, $cordovaLocalNotification){
   var getMoments = function(){
     return localStorageService.get("moments");
   };
@@ -50,14 +50,15 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     // Assign notification
     var d_fire = new Date(d.getTime() + 10000);
-    // $cordovaLocalNotification.add({
-    //   id: 'some_notification_id',
-    //   date: d_fire,
-    //   message: 'Hi There'
-    // }).then(function () {
-    //   console.log('callback for adding background notification');
-    // });
-
+    $ionicPlatform.ready(function () {
+      $window.plugin.notification.local.add({ 
+        id:         "1",  // A unique id of the notification
+        date:       new Date(),    // This expects a date object
+        message:    "yolo",  // The message
+        title:      "Stop Yoloing.",  // The title of the message
+        sound: null
+      });
+    });
 
     return localStorageService.set("moments", moments);
   };
@@ -135,8 +136,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
   // ];
 
   $scope.reload = function(moment){
-    console.log("Reloading");
-    console.log(moment);
+    // console.log("Reloading");
+    // console.log(moment);
     Moments.reloadMoment(moment);
     $scope.moments = Moments.getMoments();
   }
@@ -194,8 +195,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     $scope.newMoment.color = color;
   }  
   $scope.addNewMoment = function(moment){
-    console.log("Adding a new moment");
-    console.log(moment);
+    // console.log("Adding a new moment");
+    // console.log(moment);
 
     if(moment.moment){
       Moments.addMoment(moment);
@@ -214,9 +215,6 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       $scope.errorFound = true;
     }
   }
-
-
-
 
 
 
@@ -241,7 +239,7 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     $scope.newMoment.timeMillis = ms;
     $scope.newMoment.time = d_adjusted.toISOString().substr(0,d.toISOString().length-8);
 
-    console.log($scope.newMoment);
+    // console.log($scope.newMoment);
 
     $scope.modal.show();
   };
@@ -277,10 +275,10 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       },
       buttonClicked: function(index) {
         if(index==0){
-          console.log("Capturing picture");
+          // console.log("Capturing picture");
           takePicture();
         }else if(index==1){
-          console.log("Getting from library");
+          // console.log("Getting from library");
           importPicture();
         }
 
@@ -305,7 +303,7 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     };
 
     $cordovaCamera.getPicture(options).then(function(imageData) {
-      console.log("Captured the Picture");
+      // console.log("Captured the Picture");
       $scope.newMoment.media = imageData;
       $scope.$apply();
     }, function(err) {
@@ -329,7 +327,7 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     };
 
     $cordovaCamera.getPicture(options).then(function(imageData) {
-      console.log("Captured the Picture");
+      // console.log("Captured the Picture");
       $scope.newMoment.media = imageData;
       $scope.$apply();
     }, function(err) {
