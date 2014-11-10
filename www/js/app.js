@@ -51,13 +51,42 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     // Assign notification
     var d_fire = new Date(d.getTime() + 10000);
     $ionicPlatform.ready(function () {
+      // Check permissions
+      // $window.plugin.notification.local.hasPermission(function (granted) {
+      //     $window.plugin.notification.local.promptForPermission();
+      // });
+
+      // Manual Reminder
+      var reminder_date = new Date();
+      if(moment.reminder.timeType=="minute"){
+        reminder_date = new Date(d.getTime() + 1000*60*moment.reminder.timeValue);
+      }else if(moment.reminder.timeType=="hour"){
+        reminder_date = new Date(d.getTime() + 1000*60*60*moment.reminder.timeValue);
+      }else if(moment.reminder.timeType=="day"){
+        reminder_date = new Date(d.getTime() + 1000*60*60*24*moment.reminder.timeValue);
+      }else if(moment.reminder.timeType=="month"){
+        reminder_date = new Date(d.getTime() + 1000*60*60*24*30*moment.reminder.timeValue);
+      }
+      
+      console.log("===================MOMENT===================");
+      console.log(moment);
+      console.log("==================REMINDER==================");
+      console.log("Time now");
+      console.log(d);
+      console.log("Time Reminder");
+      console.log(reminder_date);
+
       $window.plugin.notification.local.add({ 
-        id:         "1",  // A unique id of the notification
-        date:       new Date(),    // This expects a date object
-        message:    "yolo",  // The message
-        title:      "Stop Yoloing.",  // The title of the message
-        sound: null
+        date:       reminder_date,
+        message:    moment.moment,
+        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
       });
+
+
+      // Smart Reminders
+
+      // var time_since = (( notify_date - d.getTime() ) / 1000) + 5
+
     });
 
     return localStorageService.set("moments", moments);
@@ -231,13 +260,15 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     var ms = d.getTime();
     var ms_offset = d.getTimezoneOffset() * 60000;
-    // var ms_corrected = ms - ms_offset;
-    var ms_corrected = ms; // iPhone takes care of time zone edits
+    var ms_corrected = ms - ms_offset;
+    // var ms_corrected = ms; // iPhone takes care of time zone edits
 
     var d_adjusted = new Date(ms_corrected);
 
     $scope.newMoment.timeMillis = ms;
     $scope.newMoment.time = d_adjusted.toISOString().substr(0,d.toISOString().length-8);
+
+    console.log($scope.newMoment.time);
 
     // console.log($scope.newMoment);
 
