@@ -102,24 +102,24 @@
               ng-click="sortByField('created')"
               style="color:#666666;">
               <i 
-                ng-show="sortParam=='-timeMillis'"
+                ng-show="sortParam=='-timeCreated'"
                 class="ion-ios7-arrow-thin-up"
                 style="margin-right:5px;"></i>
               <i 
-                ng-show="sortParam=='timeMillis'"
+                ng-show="sortParam=='timeCreated'"
                 class="ion-ios7-arrow-thin-down"
                 style="margin-right:5px;"></i>
                 Created</a>
             <a 
               class="button button-light"
-              ng-click="sortByField('timeReset')"
+              ng-click="sortByField('time')"
               style="color:#666666;">
               <i 
-                ng-show="sortParam=='-timeReset'"
+                ng-show="sortParam=='-time'"
                 class="ion-ios7-arrow-thin-up"
                 style="margin-right:5px;"></i>
               <i 
-                ng-show="sortParam=='timeReset'"
+                ng-show="sortParam=='time'"
                 class="ion-ios7-arrow-thin-down"
                 style="margin-right:5px;"></i>
                 Since</a>
@@ -172,7 +172,7 @@
               item="moment"
               class="card moment-list"
               ng-click="toggleStatistics(moment)"
-              style="border-left: 5px solid {{moment.color}};margin-bottom:0px;">
+              style="border-left: 5px solid {{moment.color}};margin-bottom:0px;margin-top:10px;">
 
               <div class="item-text-wrap moment">
                 <div class="row">
@@ -190,7 +190,7 @@
                       </div>
                       <div class="col col-center" style="padding-left:5px;">
                         <h4 style="color:{{moment.color}};">
-                          <timer start-time="moment.timeMillis">
+                          <timer start-time="moment.time">
                             <span
                               ng-show="months==0 && days !=0"
                             >{{days}} day{{daysS}} </span>
@@ -236,7 +236,7 @@
             </ion-item>
             
             <!-- STATISTICS -->
-            <div class="item-divider"
+            <!-- <div class="item-divider"
                   ng-show="toggleID == moment.momentID"
                   style="
                     margin-bottom:20px; 
@@ -263,9 +263,10 @@
                 </div>
               </div>
             
-            </div>
-          </div>
+            </div> -->
 
+
+          </div>
         </ion-list>
 
 

@@ -44,9 +44,19 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     moment.reset = 0;
     moment.resetArr = [];
     moment.resetAvg = 0;
+    
     var d = new Date();
+    
     moment.timeCreated = d.getTime();
     moment.timeReset = d.getTime();
+
+    var dd = new Date(moment.time);
+    var dd_ms = dd.getTime() + d.getSeconds()*1000;
+    var dd_ms_offset = dd.getTimezoneOffset() * 60000;
+    var dd_ms_corrected = dd_ms + dd_ms_offset;
+    var dd_adjusted = new Date(dd_ms_corrected);
+
+    moment.time = dd_adjusted.getTime();
 
     moments.push(moment);
 
@@ -70,19 +80,19 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
         reminder_date = new Date(d.getTime() + 1000*60*60*24*30*moment.reminder.timeValue);
       }
       
-      console.log("===================MOMENT===================");
-      console.log(moment);
-      console.log("==================REMINDER==================");
-      console.log("Time now");
-      console.log(d);
-      console.log("Time Reminder");
-      console.log(reminder_date);
+      // console.log("===================MOMENT===================");
+      // console.log(moment);
+      // console.log("==================REMINDER==================");
+      // console.log("Time now");
+      // console.log(d);
+      // console.log("Time Reminder");
+      // console.log(reminder_date);
 
-      // $window.plugin.notification.local.add({ 
-      //   date:       reminder_date,
-      //   message:    moment.moment,
-      //   title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
-      // });
+      $window.plugin.notification.local.add({ 
+        date:       reminder_date,
+        message:    moment.moment,
+        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
+      });
 
 
       // Smart Reminders
@@ -111,16 +121,15 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     return localStorageService.set("moments", moments);
   };
   var reloadMoment = function(moment){
-    console.log("RELOADING");
     var moments = getMoments();
     var d = new Date();
     var ms = d.getTime();
+
     for(var i=0; i<moments.length; i++){
       if(moment.momentID == moments[i].momentID){
-        moments[i].time = d.toISOString().substr(0,d.toISOString().length-1);
-        moments[i].timeMillis = ms;
+        moments[i].time = ms;
         moments[i].reset += 1;
-        moments[i].timeReset = d.getTime();
+        moments[i].timeReset = ms;
         moments[i].resetArr.push(ms);
 
         var sum = 0;
@@ -206,19 +215,19 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     
   }
 
-  $scope.sortParam = '-timeMillis';
+  $scope.sortParam = '-timeCreated';
   $scope.sortByField = function(param){
     if(param=='created'){
-      if($scope.sortParam == 'timeMillis'){
-        $scope.sortParam = '-timeMillis';
+      if($scope.sortParam == 'timeCreated'){
+        $scope.sortParam = '-timeCreated';
       }else{
-        $scope.sortParam = 'timeMillis';
+        $scope.sortParam = 'timeCreated';
       }
-    }else if(param=='timeReset'){
+    }else if(param=='time'){
       if($scope.sortParam == param){
-        $scope.sortParam = '-timeReset';
+        $scope.sortParam = '-time';
       }else{
-        $scope.sortParam = 'timeReset';
+        $scope.sortParam = 'time';
       }
     }else if(param=='reset'){
       if($scope.sortParam == param){
@@ -279,12 +288,12 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     var ms = d.getTime();
     var ms_offset = d.getTimezoneOffset() * 60000;
     var ms_corrected = ms - ms_offset;
-    // var ms_corrected = ms; // iPhone takes care of time zone edits
-
     var d_adjusted = new Date(ms_corrected);
 
-    $scope.newMoment.timeMillis = ms;
     $scope.newMoment.time = d_adjusted.toISOString().substr(0,d.toISOString().length-8);
+
+
+
 
     console.log($scope.newMoment.time);
 
