@@ -42,6 +42,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     moment.momentID = maxID+1;
 
     moment.reset = 0;
+    moment.resetArr = [];
+    moment.resetAvg = 0;
     var d = new Date();
     moment.timeCreated = d.getTime();
     moment.timeReset = d.getTime();
@@ -76,11 +78,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       console.log("Time Reminder");
       console.log(reminder_date);
 
-      $window.plugin.notification.local.add({ 
-        date:       reminder_date,
-        message:    moment.moment,
-        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
-      });
+      // $window.plugin.notification.local.add({ 
+      //   date:       reminder_date,
+      //   message:    moment.moment,
+      //   title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
+      // });
 
 
       // Smart Reminders
@@ -96,6 +98,12 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     for(var i=0; i<moments.length; i++){
       if(moment.momentID == moments[i].momentID){
+
+        // var ID = "moment-"+str(moment.momentID)+"-0";
+        // window.plugin.notification.local.cancel(ID, function () {
+        //   console.log("Canceling "+ ID);
+        // }, scope);
+
         moments.splice(i, 1);    
       }
     }
@@ -103,14 +111,24 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     return localStorageService.set("moments", moments);
   };
   var reloadMoment = function(moment){
+    console.log("RELOADING");
     var moments = getMoments();
     var d = new Date();
-
+    var ms = d.getTime();
     for(var i=0; i<moments.length; i++){
       if(moment.momentID == moments[i].momentID){
         moments[i].time = d.toISOString().substr(0,d.toISOString().length-1);
+        moments[i].timeMillis = ms;
         moments[i].reset += 1;
         moments[i].timeReset = d.getTime();
+        moments[i].resetArr.push(ms);
+
+        var sum = 0;
+        var count = 0;
+        for(var j=0; j<moments[i].resetArr.length; j++){
+          sum += moments[i].resetArr[j];
+        }
+        moments[i].resetAvg = sum / moments[i].resetArr.length;
       }
     }
 
@@ -367,6 +385,16 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     });
   };
 
+  // Statistics
+  $scope.toggleID = -1;
+  $scope.toggleStatistics=function(moment){
+    if($scope.toggleID==moment.momentID){
+      $scope.toggleID = -1;
+    }else{
+      $scope.toggleID = moment.momentID;
+    }
+    console.log(moment);
+  }
 
 
 }]);

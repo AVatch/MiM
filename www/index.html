@@ -163,76 +163,109 @@
         </div>
 
         <ion-list>
-          <ion-item
+          <div class="item-wrapper"
             ng-repeat="moment in moments 
               | filter:search
               | filter:filterColor
-              | orderBy:sortParam"
-            item="moment"
-            class="card moment-list"
-            style="border-left: 5px solid {{moment.color}};">
+              | orderBy:sortParam">
+            <ion-item
+              item="moment"
+              class="card moment-list"
+              ng-click="toggleStatistics(moment)"
+              style="border-left: 5px solid {{moment.color}};margin-bottom:0px;">
 
-            <div class="item-text-wrap moment">
-              <div class="row">
-                <div class="col col-90">
-                  <div class="row">
-                    <div ng-if="moment.media" class="col col-center col-20">
-                      <!-- <img src="http://placehold.it/50x50"> -->
-                      <img 
-                        src="data:image/jpeg;base64,{{moment.media}}"
-                        style="
-                          width:50px;
-                          height:50px;
+              <div class="item-text-wrap moment">
+                <div class="row">
+                  <div class="col col-90">
+                    <div class="row">
+                      <div ng-if="moment.media" class="col col-center col-20">
+                        <!-- <img src="http://placehold.it/50x50"> -->
+                        <img 
+                          src="data:image/jpeg;base64,{{moment.media}}"
+                          style="
+                            width:50px;
+                            height:50px;
 
-                          border-radius:5px;">
-                    </div>
-                    <div class="col col-center" style="padding-left:5px;">
-                      <h4 style="color:{{moment.color}};">
-                        <timer start-time="moment.timeMillis">
-                          <span
-                            ng-show="months==0 && days !=0"
-                          >{{days}} day{{daysS}} </span>
-                          <span
-                            ng-show="months==0 && days==0 && hours!=0"
-                            >{{hours}} hour{{hoursS}} </span>
-                          <span
-                            ng-show="months==0 && days==0 && hours==0 && minutes!=0"
-                            >{{minutes}} minute{{minutesS}} </span>
-                          <span
-                            ng-show="months==0 && days==0 && hours==0 && minutes==0"
-                            >{{seconds}} second{{secondsS}} </span>
-                        </timer>
-                        since
-                      </h4>
-                      <p>{{moment.moment}}</p>
+                            border-radius:5px;">
+                      </div>
+                      <div class="col col-center" style="padding-left:5px;">
+                        <h4 style="color:{{moment.color}};">
+                          <timer start-time="moment.timeMillis">
+                            <span
+                              ng-show="months==0 && days !=0"
+                            >{{days}} day{{daysS}} </span>
+                            <span
+                              ng-show="months==0 && days==0 && hours!=0"
+                              >{{hours}} hour{{hoursS}} </span>
+                            <span
+                              ng-show="months==0 && days==0 && hours==0 && minutes!=0"
+                              >{{minutes}} minute{{minutesS}} </span>
+                            <span
+                              ng-show="months==0 && days==0 && hours==0 && minutes==0"
+                              >{{seconds}} second{{secondsS}} </span>
+                          </timer>
+                          since
+                        </h4>
+                        <p>{{moment.moment}}</p>
+                      </div>
                     </div>
                   </div>
+                  <div class="col col-center moment-reset-counter">
+                    <span style="color:{{moment.color}}">{{moment.reset}}</span>
+                    </div>
                 </div>
-                <div class="col col-center moment-reset-counter">
-                  <span style="color:{{moment.color}}">{{moment.reset}}</span>
-                  </div>
               </div>
-            </div>
 
-            <ion-option-button class="button-energized"
-                             ng-click="reload(moment)"
-                             style="border:0px;">
-              <i  class="icon ion-ios7-reload"
-                  style=" position: relative;
-                          top: 15%;
-                          transform: translateY(-20%);"></i>
-            </ion-option-button>
-            
-            <ion-option-button class="button-assertive"
-                               ng-click="delete(moment)"
+              <ion-option-button class="button-energized"
+                               ng-click="reload(moment)"
                                style="border:0px;">
-              <i  class="icon ion-ios7-trash-outline"
-                  style=" position: relative;
-                          top: 20%;
-                          transform: translateY(-20%);"></i>
-            </ion-option-button>
+                <i  class="icon ion-ios7-reload"
+                    style=" position: relative;
+                            top: 15%;
+                            transform: translateY(-20%);"></i>
+              </ion-option-button>
+              
+              <ion-option-button class="button-assertive"
+                                 ng-click="delete(moment)"
+                                 style="border:0px;">
+                <i  class="icon ion-ios7-trash-outline"
+                    style=" position: relative;
+                            top: 20%;
+                            transform: translateY(-20%);"></i>
+              </ion-option-button>
+            </ion-item>
+            
+            <!-- STATISTICS -->
+            <div class="item-divider"
+                  ng-show="toggleID == moment.momentID"
+                  style="
+                    margin-bottom:20px; 
+                    margin-left:10px; 
+                    margin-right:10px;
 
-          </ion-item>
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
+              
+              <div class="row">
+                <div class="col">
+                  <p class="center">Histogram</p>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <p class="center">AVG {{moment.resetAvg}}</p>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <p ng-repeat="reset in moment.resetArr.slice(0, 3)">{{reset}}</p>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+
         </ion-list>
 
 

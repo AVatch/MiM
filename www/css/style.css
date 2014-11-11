@@ -162,7 +162,7 @@ html *{
 
 
 .center{
-  display: -webkit-box;
+    display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
