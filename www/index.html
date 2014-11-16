@@ -112,14 +112,14 @@
                 Created</a>
             <a 
               class="button button-light"
-              ng-click="sortByField('time')"
+              ng-click="sortByField('since')"
               style="color:#666666;">
               <i 
-                ng-show="sortParam=='-time'"
+                ng-show="sortParam=='-since'"
                 class="ion-ios7-arrow-thin-up"
                 style="margin-right:5px;"></i>
               <i 
-                ng-show="sortParam=='time'"
+                ng-show="sortParam=='since'"
                 class="ion-ios7-arrow-thin-down"
                 style="margin-right:5px;"></i>
                 Since</a>
@@ -154,12 +154,13 @@
         </div>
         <!-- SEARCH BAR -->
 
-        
-        <div class="nothing" ng-show="moments.length==0" ng-click="openModal()">
-            <h1 class="center"
+        <div class="nothing center" ng-show="!moments.length" ng-click="openModal()">
+            <!-- <h1 class="center"
               style="
                 padding-top:100px;
-                color: #aeaeae;">Add a Moment</h1>
+                color: #aeaeae;">Add a Moment</h1> -->
+
+              <img src="img/AddAMoment.png" style="width:90%; margin-top:50px;">
         </div>
 
         <ion-list>
@@ -179,7 +180,6 @@
                   <div class="col col-90">
                     <div class="row">
                       <div ng-if="moment.media" class="col col-center col-20">
-                        <!-- <img src="http://placehold.it/50x50"> -->
                         <img 
                           src="data:image/jpeg;base64,{{moment.media}}"
                           style="
@@ -236,7 +236,7 @@
             </ion-item>
             
             <!-- STATISTICS -->
-            <!-- <div class="item-divider"
+            <div class="item-divider"
                   ng-show="toggleID == moment.momentID"
                   style="
                     margin-bottom:20px; 
@@ -263,7 +263,7 @@
                 </div>
               </div>
             
-            </div> -->
+            </div>
 
 
           </div>

@@ -58,6 +58,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     moment.time = dd_adjusted.getTime();
 
+    moment.since = timeSince(d.getTime(), dd_adjusted.getTime());
+
     moments.push(moment);
 
     // Assign notification
@@ -88,11 +90,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       // console.log("Time Reminder");
       // console.log(reminder_date);
 
-      $window.plugin.notification.local.add({ 
-        date:       reminder_date,
-        message:    moment.moment,
-        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
-      });
+      // $window.plugin.notification.local.add({ 
+      //   date:       reminder_date,
+      //   message:    moment.moment,
+      //   title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
+      // });
 
 
       // Smart Reminders
@@ -120,6 +122,23 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     return localStorageService.set("moments", moments);
   };
+
+  var timeSince = function(t1, t2){
+    var d = t2 - t1;
+    var d_s = d / 1000;
+    var d_m = d / (60*1000);
+    var d_h = d / (60*60*1000);
+    var d_d = d / (24*60*60*1000);
+
+    var timeDiffArr = [d, d_s, d_m, d_h, d_d];
+    return timeDiffArr
+  };
+
+  var calculateAvgTime = function(timeArr){
+    var x1 = new Date()
+
+  };
+
   var reloadMoment = function(moment){
     var moments = getMoments();
     var d = new Date();
@@ -131,6 +150,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
         moments[i].reset += 1;
         moments[i].timeReset = ms;
         moments[i].resetArr.push(ms);
+
+        moments[i].since = timeSince(ms, moments[i].since);
 
         var sum = 0;
         var count = 0;
@@ -148,7 +169,9 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     getMoments: getMoments,
     addMoment: addMoment,
     deleteMoment: deleteMoment,
-    reloadMoment: reloadMoment
+    reloadMoment: reloadMoment,
+
+    timeSince: timeSince
   }
 }])
 
@@ -158,9 +181,9 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
 
 .controller('mimController', ['$scope', '$ionicModal', '$ionicActionSheet',
-            '$cordovaCamera', 'Moments',
+            '$cordovaCamera', 'Moments', '$timeout',
             function($scope, $ionicModal, $ionicActionSheet, $cordovaCamera,
-                     Moments){
+                     Moments, $timeout){
 
   $scope.moments = Moments.getMoments();
   // $scope.moments = [
@@ -223,11 +246,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       }else{
         $scope.sortParam = 'timeCreated';
       }
-    }else if(param=='time'){
+    }else if(param=='since'){
       if($scope.sortParam == param){
-        $scope.sortParam = '-time';
+        $scope.sortParam = '-since';
       }else{
-        $scope.sortParam = 'time';
+        $scope.sortParam = 'since';
       }
     }else if(param=='reset'){
       if($scope.sortParam == param){
@@ -259,7 +282,13 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
       // Cleanup
       $scope.moments = Moments.getMoments();
+      
       $scope.closeModal();
+      
+      $timeout(function() {
+          console.log('timeout');
+      }, 1000);
+
       $scope.newMoment = {};
       $scope.newMoment.color = '#2C97DE';
       $scope.newMoment.ambientReminderFlag = true;
@@ -397,6 +426,9 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
   // Statistics
   $scope.toggleID = -1;
   $scope.toggleStatistics=function(moment){
+
+    console.log(moment);
+
     if($scope.toggleID==moment.momentID){
       $scope.toggleID = -1;
     }else{
