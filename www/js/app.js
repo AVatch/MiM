@@ -90,11 +90,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       // console.log("Time Reminder");
       // console.log(reminder_date);
 
-      // $window.plugin.notification.local.add({ 
-      //   date:       reminder_date,
-      //   message:    moment.moment,
-      //   title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
-      // });
+      $window.plugin.notification.local.add({ 
+        date:       reminder_date,
+        message:    moment.moment,
+        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
+      });
 
 
       // Smart Reminders
