@@ -49,6 +49,7 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     
     moment.timeCreated = d.getTime();
     moment.timeReset = d.getTime();
+    
 
     var dd = new Date(moment.time);
     var dd_ms = dd.getTime() + d.getSeconds()*1000;
@@ -56,9 +57,8 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     var dd_ms_corrected = dd_ms + dd_ms_offset;
     var dd_adjusted = new Date(dd_ms_corrected);
 
+    moment.since = dd_adjusted.getTime();
     moment.time = dd_adjusted.getTime();
-
-    moment.since = timeSince(d.getTime(), dd_adjusted.getTime());
 
     moments.push(moment);
 
@@ -147,17 +147,24 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     for(var i=0; i<moments.length; i++){
       if(moment.momentID == moments[i].momentID){
         moments[i].time = ms;
+        moments[i].since = timeSince(moments[i].timeReset, ms);
         moments[i].reset += 1;
         moments[i].timeReset = ms;
         moments[i].resetArr.push(ms);
 
-        moments[i].since = timeSince(ms, moments[i].since);
 
         var sum = 0;
         var count = 0;
         for(var j=0; j<moments[i].resetArr.length; j++){
-          sum += moments[i].resetArr[j];
+          if(j==0){
+            sum += timeSince(moments[i].timeCreated, ms)[0];
+          }else{
+            sum += timeSince(moments[i].resetArr[j-1], moments[i].resetArr[j])[0];
+            // sum += moments[i].resetArr[j];  
+          }
+          
         }
+        console.log(sum);
         moments[i].resetAvg = sum / moments[i].resetArr.length;
       }
     }
@@ -429,10 +436,40 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     console.log(moment);
 
+
     if($scope.toggleID==moment.momentID){
       $scope.toggleID = -1;
+      $scope.focusAvgTime = null;
     }else{
       $scope.toggleID = moment.momentID;
+      
+      var d = moment.resetAvg;
+      var d_s = d / 1000;
+      var d_m = d / (60*1000);
+      var d_h = d / (60*60*1000);
+      var d_d = d / (24*60*60*1000);
+
+      console.log(d)
+
+      if(d_s<60){
+        $scope.focusAvgTime = d_s;
+        $scope.focusAvgType = "sec";
+      }else if(d_s>=60 && d_m<60){
+        $scope.focusAvgTime = d_m;
+        $scope.focusAvgType = "mins";
+      }else if(d_s>=60 && d_m>=60 && d_h<24){
+        $scope.focusAvgTime = d_h;
+        $scope.focusAvgType = "hours";
+      }else{
+        $scope.focusAvgTime = d_d;
+        $scope.focusAvgType = "days";
+      }
+
+      
+
+
+
+
     }
     console.log(moment);
   }
