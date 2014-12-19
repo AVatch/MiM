@@ -66,9 +66,9 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     var d_fire = new Date(d.getTime() + 10000);
     $ionicPlatform.ready(function () {
       // Check permissions
-      // $window.plugin.notification.local.hasPermission(function (granted) {
-      //     $window.plugin.notification.local.promptForPermission();
-      // });
+      $window.plugin.notification.local.hasPermission(function (granted) {
+          $window.plugin.notification.local.promptForPermission();
+      });
 
       // Manual Reminder
       var reminder_date = new Date();
@@ -85,11 +85,6 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       // console.log("===================MOMENT===================");
       // console.log(moment);
       // console.log("==================REMINDER==================");
-      // console.log("Time now");
-      // console.log(d);
-      // console.log("Time Reminder");
-      // console.log(reminder_date);
-
       $window.plugin.notification.local.add({ 
         date:       reminder_date,
         message:    moment.moment,
@@ -98,7 +93,6 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
 
       // Smart Reminders
-
       // var time_since = (( notify_date - d.getTime() ) / 1000) + 5
 
     });
@@ -146,29 +140,31 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
 
     for(var i=0; i<moments.length; i++){
       if(moment.momentID == moments[i].momentID){
+        // RESET the moment
         moments[i].time = ms;
         moments[i].since = timeSince(moments[i].timeReset, ms);
         moments[i].reset += 1;
         moments[i].timeReset = ms;
         moments[i].resetArr.push(ms);
 
-
-        var sum = 0;
-        var count = 0;
+        // Calculate average reset time
+        sum = 0;
+        count=0;
         for(var j=0; j<moments[i].resetArr.length; j++){
           if(j==0){
-            sum += timeSince(moments[i].timeCreated, ms)[0];
+            sum+=(moments[i].resetArr[j] - moments[i].timeCreated);
           }else{
-            sum += timeSince(moments[i].resetArr[j-1], moments[i].resetArr[j])[0];
-            // sum += moments[i].resetArr[j];  
+            sum+=(moments[i].resetArr[j] - moments[i].resetArr[j-1]);
           }
-          
+          count++;
         }
-        console.log(sum);
-        moments[i].resetAvg = sum / moments[i].resetArr.length;
+
+        var average = 1.0*sum / count;
+
+        moments[i].resetAvg = Math.floor(average);
       }
     }
-
+    // Stor in the DB
     return localStorageService.set("moments", moments);
   }
 
@@ -193,33 +189,6 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
                      Moments, $timeout){
 
   $scope.moments = Moments.getMoments();
-  // $scope.moments = [
-  //   { "momentID":0, 
-  //     "moment":"Had lunch with Giullian", 
-  //     "media":"http://placehold.it/50x50",
-  //     "reset":5, 
-  //     "color":"#F16753",
-  //     "time":10000,
-  //     "reminder":{"value":5, "type":"days"}
-  //   },
-  //   { "momentID":1, 
-  //     "moment":"Read a book", 
-  //     "media":"",
-  //     "reset":2, 
-  //     "color":"#FFDE37",
-  //     "time":10000,
-  //     "reminder":{"value":5, "type":"days"}
-  //   },
-  //   { "momentID":2, 
-  //     "moment":"Worked on this app", 
-  //     "media":"http://placehold.it/50x50", 
-  //     "reset":1,
-  //     "color":"#F16753",
-  //     "time":10000,
-  //     "reminder":{"value":5, "type":"days"}
-  //   }
-
-  // ];
 
   $scope.reload = function(moment){
     // console.log("Reloading");
@@ -232,17 +201,13 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     $scope.moments = Moments.getMoments();
   }
 
-
-
-
   $scope.filterColor = '';
   $scope.filterByColor = function(color){
     if($scope.filterColor == color){
       $scope.filterColor = '';
     }else{
       $scope.filterColor = color;  
-    }
-    
+    }    
   }
 
   $scope.sortParam = '-timeCreated';
@@ -281,20 +246,13 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     $scope.newMoment.color = color;
   }  
   $scope.addNewMoment = function(moment){
-    // console.log("Adding a new moment");
-    // console.log(moment);
-
     if(moment.moment){
       Moments.addMoment(moment);
 
       // Cleanup
       $scope.moments = Moments.getMoments();
       
-      $scope.closeModal();
-      
-      $timeout(function() {
-          console.log('timeout');
-      }, 1000);
+      $scope.closeModal();      
 
       $scope.newMoment = {};
       $scope.newMoment.color = '#2C97DE';
@@ -327,14 +285,6 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     var d_adjusted = new Date(ms_corrected);
 
     $scope.newMoment.time = d_adjusted.toISOString().substr(0,d.toISOString().length-8);
-
-
-
-
-    console.log($scope.newMoment.time);
-
-    // console.log($scope.newMoment);
-
     $scope.modal.show();
   };
   $scope.closeModal = function() {
@@ -434,45 +384,57 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
   $scope.toggleID = -1;
   $scope.toggleStatistics=function(moment){
 
-    console.log(moment);
-
+    // console.log("Toggling Statistics");
 
     if($scope.toggleID==moment.momentID){
       $scope.toggleID = -1;
       $scope.focusAvgTime = null;
     }else{
       $scope.toggleID = moment.momentID;
-      
-      var d = moment.resetAvg;
-      var d_s = d / 1000;
-      var d_m = d / (60*1000);
-      var d_h = d / (60*60*1000);
-      var d_d = d / (24*60*60*1000);
 
-      console.log(d)
+      var resetAvg = timeFormat(moment.resetAvg);
+      $scope.focusAvgTime = resetAvg[0];
+      $scope.focusAvgType = resetAvg[1];
 
-      if(d_s<60){
-        $scope.focusAvgTime = d_s;
-        $scope.focusAvgType = "sec";
-      }else if(d_s>=60 && d_m<60){
-        $scope.focusAvgTime = d_m;
-        $scope.focusAvgType = "mins";
-      }else if(d_s>=60 && d_m>=60 && d_h<24){
-        $scope.focusAvgTime = d_h;
-        $scope.focusAvgType = "hours";
-      }else{
-        $scope.focusAvgTime = d_d;
-        $scope.focusAvgType = "days";
+
+      // get the last three times
+      reset_times = moment.resetArr.slice(0, 3);
+      $scope.reset_times = [];
+      for(var i=0; i<reset_times.length; i++){
+        var d = new Date(reset_times[i]);
+
+        $scope.reset_times.push([d.toLocaleDateString(),d.toLocaleTimeString()]);
       }
 
-      
-
-
-
-
     }
-    console.log(moment);
-  }
 
+  };
+
+  var timeFormat = function(t){
+    var d = t;
+    var d_s = Math.floor(d / 1000);
+    var d_m = Math.floor(d / (60*1000));
+    var d_h = Math.floor(d / (60*60*1000));
+    var d_d = Math.floor(d / (24*60*60*1000));
+
+    var focusAvgTime;
+    var focusAvgType;
+
+    if(d_s<60){
+      focusAvgTime = d_s;
+      focusAvgType = "sec";
+    }else if(d_s>=60 && d_m<60){
+      focusAvgTime = d_m;
+      focusAvgType = "mins";
+    }else if(d_s>=60 && d_m>=60 && d_h<24){
+      focusAvgTime = d_h;
+      focusAvgType = "hours";
+    }else{
+      focusAvgTime = d_d;
+      focusAvgType = "days";
+    }
+
+    return [focusAvgTime, focusAvgType]
+  };
 
 }]);

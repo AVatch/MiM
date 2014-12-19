@@ -181,7 +181,7 @@
                     <div class="row">
                       <div ng-if="moment.media" class="col col-center col-20">
                         <img 
-                          src="data:image/jpeg;base64,{{moment.media}}"
+                          ng-src="data:image/jpeg;base64,{{moment.media}}"
                           style="
                             width:50px;
                             height:50px;
@@ -236,34 +236,30 @@
             </ion-item>
             
             <!-- STATISTICS -->
-            <!-- <div class="item-divider"
+            <div class="item-divider"
                   ng-show="toggleID == moment.momentID"
                   style="
                     margin-bottom:20px; 
-                    margin-left:10px; 
-                    margin-right:10px;
+                    margin-left:13px; 
+                    margin-right:13px;
 
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
               
               <div class="row">
                 <div class="col">
-                  <p class="center">Histogram</p>
+                  <p style="margin:0px;font-weight:normal;">Average Time Between Resets: {{focusAvgTime}} {{focusAvgType}}</p>
                 </div>
               </div>
-
+              <hr ng-if="reset_times.length>0">
               <div class="row">
                 <div class="col">
-                  <p class="center">AVG {{focusAvgTime}} {{focusAvgType}}</p>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <p ng-repeat="reset in moment.resetArr.slice(0, 3)">{{reset}}</p>
+                  <p ng-repeat="reset in reset_times" style="margin:0px;font-weight:normal;">
+                    {{reset[0]}} {{reset[1]}}
+                  </p>
                 </div>
               </div>
             
-            </div> -->
+            </div>
 
 
           </div>
