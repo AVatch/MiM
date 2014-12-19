@@ -66,9 +66,9 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
     var d_fire = new Date(d.getTime() + 10000);
     $ionicPlatform.ready(function () {
       // Check permissions
-      $window.plugin.notification.local.hasPermission(function (granted) {
-          $window.plugin.notification.local.promptForPermission();
-      });
+      // $window.plugin.notification.local.hasPermission(function (granted) {
+      //     $window.plugin.notification.local.promptForPermission();
+      // });
 
       // Manual Reminder
       var reminder_date = new Date();
@@ -85,11 +85,11 @@ angular.module('mim', ['ionic', 'ngCordova', 'LocalStorageModule', 'timer'])
       // console.log("===================MOMENT===================");
       // console.log(moment);
       // console.log("==================REMINDER==================");
-      $window.plugin.notification.local.add({ 
-        date:       reminder_date,
-        message:    moment.moment,
-        title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
-      });
+      // $window.plugin.notification.local.add({ 
+      //   date:       reminder_date,
+      //   message:    moment.moment,
+      //   title:      moment.reminder.timeValue + " " + moment.reminder.timeType + "s since",
+      // });
 
 
       // Smart Reminders
